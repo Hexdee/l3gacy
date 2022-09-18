@@ -23,13 +23,18 @@ const CheckInterval = () => {
   const [lastSeen, setLastSeen] = useState();
   const [checkInLoading, setCheckInLoading] = useState(false);
 
-  useEffect(() => {
-    getUserInterval(getUser, setLegatee, setLastSeen, setInterval);
-  }, [])
-
-  const getUser = () => {
-    return localStorage.getItem('legacy_user');
+  const getLegacy = async() => {
+    console.log((await checkConnection()));
+    const legacy = await getUserInterval(await checkConnection());
+    console.log(legacy)
+    setInterval(legacy.interval);
+    setLastSeen(legacy.lastSeen);
+    setLegatee(legacy.legatee);
   }
+
+  useEffect(() => {
+    getLegacy()
+  }, [])
 
   const checkIn = async (e) => {
     e.preventDefault();

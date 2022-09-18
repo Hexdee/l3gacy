@@ -78,12 +78,7 @@ export async function checkConnection() {
   }
 }
 
-
-
-
-
-
-const getUserInterval = (getUser, setLegatee, setLastSeen, setInterval) => {
+const getUserInterval = async(getUser, setLegatee, setLastSeen, setInterval) => {
         try {
           const provider = new ethers.providers.Web3Provider(window.ethereum);
           const signer = provider.getSigner();
@@ -91,18 +86,18 @@ const getUserInterval = (getUser, setLegatee, setLastSeen, setInterval) => {
           console.log(legacy);
           //TODO
           //Display loader
-          legacy.legacyIndexes(getUser()).then((index) => {
-            legacy.legacies(Number(index)).then((res) => {
-              setLegatee(res[1]);
+          const index = await legacy.legacyIndexes(await checkConnection());
+            const res = await legacy.legacies(Number(index))
+              console.log(res)
+              const legatee = res[1];
               //Convert lastSeen to minutes (just for the sake of demo)
               let ls = Math.floor( ((Number(new Date()) / 1000) - Number(res[2])) / (3600 * 24) );
-              setLastSeen(ls == 0 ? "Today" : `${ls} days ago`);
+              const lastSeen = ls == 0 ? "Today" : `${ls} days ago`;
               //Convert checkInterval to seconds (just for the sake of demo)
               const secs = Number(res[3]);
               const intervalMins = Math.floor(secs / (3600 * 24));
-              setInterval(`Every ${intervalMins} days`);
-            })
-          })
+              const interval = `Every ${intervalMins} days`;
+              return {legatee, lastSeen, interval};
         } catch (error) {
           toaster.danger('An error occured!')
           return;
