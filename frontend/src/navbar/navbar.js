@@ -6,12 +6,14 @@ import logo from "../../src/assets/icons/logo.svg";
 import { close, hamburger } from "../assets/svgs/svg";
 import CustomButton from "../common/CustomButton";
 import { toaster } from "evergreen-ui";
+import { useNavigate } from "react-router-dom";
 import {connect as connectWallet,
   checkConnection,
   disconnect as disconnectWallet,
   isDisconnected} from "../utils/helpers.js"
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [openNavBar, setOpenNavBar] = useState(false);
   const [user, setUser] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -20,6 +22,7 @@ const Navbar = () => {
   const disconnect = () => {
     disconnectWallet();
     setIsConnected(false);
+    navigate('/');
   }
   
   const connect = async() => {

@@ -4,13 +4,30 @@ import {ethers} from "ethers";
 import { toaster } from "evergreen-ui";
 import { legacyAddress, legacyAbi } from "./contract";
 
+export async function addTokens(tokens) {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
+  try {
+    console.log(tokens);
+    // Add tokens to Legacy
+    const tx = await legacy.addTokens(tokens);
+    // await tx.wait();
+    return true
+  } catch (error) {
+    console.log(error);
+    toaster.danger("An error occured!");
+    return false
+  }
+}
+
 export async function createLegacy(legatee, checkInterval) {
   try{
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
     const tx = await legacy.create(legatee, checkInterval);
-    await tx.wait();
+    // await tx.wait();
     return true;
   } catch (err) {
     console.log(err)

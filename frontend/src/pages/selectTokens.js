@@ -6,6 +6,12 @@ import { ethers } from "ethers";
 import { toaster } from "evergreen-ui";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../navbar/navbar";
+import {
+  checkConnection,
+  isDisconnected,
+  addTokens
+} from "../utils/helpers.js"
+import { legacyAddress } from "../utils/contract";
 
 const SelectTokens = () => {
   const navigate = useNavigate();
@@ -14,72 +20,60 @@ const SelectTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
 
-  const getUser = () => {
-    return localStorage.getItem("legacy_user");
-  };
 
   useEffect(() => {
     setGetTokensLoading(true);
-    const user = getUser();
-    if (!user) {
-      return;
-    }
-    try {
-      const url = new URL(
-        `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=mumbai`
-      );
-      fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key":
-            "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
-        },
-      }).then(async (res) => {
-        const res_json = await res.json();
-        // console.log(res_json);
-        setTokens(res_json);
-        setGetTokensLoading(false);
-        // console.log(tokens);
-      });
-    } catch (error) {
-      console.log(error);
-      setGetTokensLoading(false);
-    }
-  }, []);
+    getTokens();
+  }, [])
+
+const getTokens = async() => {
+  if(isDisconnected()) {
+    return;
+  }
+  const user = await checkConnection();
+  console.log(user);
+  console.log("fetching tokens...")
+  try {
+    const url = new URL(
+      `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
+    );
+  
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key":
+          "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
+      },
+    })
+    const res_json = await res.json();
+    // console.log(res_json);
+    setTokens(res_json);
+    setGetTokensLoading(false);
+    // console.log(tokens);
+  } catch(err) {
+    console.log(err);
+    setGetTokensLoading(false);
+  }
+}
 
   const approve = async (tokenAddress) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const legacyAddress = "0x3113ee4eD0637F2f0EE49Eeb0cFF8D7cAf2D79A8";
     const signer = provider.getSigner();
 
     const erc20Abi = [
-      "function approve(address _legatee, uint256 _checkInterval)",
+      "function approve(address spender, uint256 amount)",
     ];
     const token = new ethers.Contract(tokenAddress, erc20Abi, signer);
     const tx = await token.approve(legacyAddress, ethers.constants.MaxUint256);
   };
 
-  const addTokens = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const legacyAddress = "0x3113ee4eD0637F2f0EE49Eeb0cFF8D7cAf2D79A8";
-    const signer = provider.getSigner();
+  const add = async () => {
     let tokenAddresses = selectedTokens.map((tkn) => tkn.token_address);
-
-    // User approve contract to have access to their token
-    try {
-      console.log(tokenAddresses);
-      // Add tokens to Legacy
-      const legacyAbi = ["function addTokens(address[] memory _tokens)"];
-      const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
-      // console.log(tokenAddresses)
-      const tx = await legacy.addTokens(tokenAddresses);
-      await tx.wait();
-    } catch (error) {
-      console.log(error);
-      toaster.danger("An error occured!");
-      setIsLoading(false);
-      return;
+    const res = await addTokens(tokenAddresses);
+    setIsLoading(false);
+    if(res) {
+      navigate('/profile');
     }
   };
 
@@ -174,7 +168,7 @@ const SelectTokens = () => {
             </>
           )}
         </Box>
-        <CustomButton w={{ base: "100%", lg: '170px' }} bg="brand.primary" color="brand.white" hoverColor="brand.yellow" isLoading={isLoading} onClick={addTokens} ml={{ base: '0', lg: "20px"}}>
+        <CustomButton w={{ base: "100%", lg: '170px' }} bg="brand.primary" color="brand.white" hoverColor="brand.yellow" isLoading={isLoading} onClick={add} ml={{ base: '0', lg: "20px"}}>
           Proceed
         </CustomButton>
         <CustomButton w={{ base: "100%", lg: '170px' }} mt={{ base: "20px", md: '0' }}  onClick={() => navigate("/profile")} ml={{ base: '0', lg: "20px"}}>

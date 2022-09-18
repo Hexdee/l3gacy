@@ -6,12 +6,7 @@ import { useState } from "react";
 import { toaster } from "evergreen-ui";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../navbar/navbar";
-import {connect as connectWallet,
-  checkConnection,
-  disconnect as disconnectWallet,
-  isDisconnected,
-  createLegacy,  
-} from "../utils/helpers.js"
+import {createLegacy } from "../utils/helpers.js"
 
 const Form = () => {
   let navigate = useNavigate();
