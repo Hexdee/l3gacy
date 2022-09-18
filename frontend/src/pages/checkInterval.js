@@ -8,6 +8,13 @@ import TextInput from "../common/TextInput";
 import { useNavigate } from "react-router-dom";
 import getUserInterval from "../utils/helpers";
 import Navbar from "../navbar/navbar";
+import {
+  checkConnection,
+  isDisconnected,
+  addTokens
+} from "../utils/helpers.js"
+import { legacyAddress, legacyAbi } from "../utils/contract";
+
 
 const CheckInterval = () => {
   const navigate = useNavigate();
@@ -30,8 +37,6 @@ const CheckInterval = () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      const legacyAddress = "0x3113ee4eD0637F2f0EE49Eeb0cFF8D7cAf2D79A8";
-      const legacyAbi = ["function checkIn()"];
       const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
       //TODO
       //Display loader
