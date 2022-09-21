@@ -27,8 +27,11 @@ const Navbar = () => {
   
   const connect = async() => {
     try {
-        setUser(await connectWallet());
+      const account = await connectWallet();
+      if (account) {
+        setUser(account);
         setIsConnected(true);
+      }
     } catch (err) {
       setIsConnected(false);
       console.log(err)
@@ -50,47 +53,6 @@ const Navbar = () => {
     }
   }, [])
 
-
-//   // detect provider using @metamask/detect-provider
-// detectEthereumProvider().then((provider) => {
-//   if (provider && provider.isMetaMask) {
-//     provider.on('accountsChanged', handleAccountsChanged);
-//     // connect btn is initially disabled
-//     $('#connect-btn').addEventListener('click', connect);
-//     checkConnection();
-//   } else {
-//     console.log('Please install MetaMask!');
-//   }
-// });
-
-
-//   const getUser = async() => {
-//     if(window.ethereum) {
-//       const account = await window.ethereum.request({ method: 'eth_requestAccounts'})
-//     }
-//   }
-
-//   useEffect(() => {
-//     setUser(getUser);
-// }, [user]);
-
-
-  // const connect = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //       const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //       await provider.send("eth_requestAccounts", []);
-  //       const signer = await provider.getSigner();
-  //       const address = await signer.getAddress();
-  //       localStorage.setItem('legacy_user', address);
-  //       setUser(address);
-  //       setIsLoading(false);
-  //   } catch(error) {
-  //       console.log(error);
-  //       toaster.danger("An error occured!");
-  //       setIsLoading(false);
-  //   }
-// }
   return (
     <>
       <Flex

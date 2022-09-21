@@ -48,12 +48,52 @@ export const hasLegacy = async(address) => {
 }
 
 export async function connect() {
-  if(window.confirm("Are you sure you want to connect your wallet. This would let Legacy see your wallet address and account balance")) {
-    const accounts = await window.ethereum
-      .request({ method: 'eth_requestAccounts' })
-      localStorage.removeItem('isDisconnected')
-      return accounts[0];
-  }
+  if(window.ethereum) {
+    try {
+      // check if the chain to connect to is installed
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0xA869' }], // chainId must be in hexadecimal numbers
+      });
+    } catch (error) {
+      // This error code indicates that the chain has not been added to MetaMask
+      // if it is not, then install it into the user MetaMask
+      if (error.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0xA869',
+                chainName: 'Avalanche Fuji testnet',
+                nativeCurrency: {
+                  name: 'Avalanche Token',
+                  symbol: 'AVAX', // 2-6 characters long
+                  decimals: 18
+                },
+                blockExplorerUrls: ['https://testnet.snowtrace.io'],
+                rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+              },
+            ],
+          });
+        } catch (addError) {
+          console.error(addError);
+          toaster.danger('failed to add network to metamask');
+          return;
+        }
+      } else {
+        console.log(error);
+        toaster.danger('failed to switch network to AVAX Fuji testnet')
+        return;
+      }
+    }
+      if(window.confirm("Are you sure you want to connect your wallet. This would let Legacy see your wallet address and account balance")) {
+        const accounts = await window.ethereum
+          .request({ method: 'eth_requestAccounts' })
+          localStorage.removeItem('isDisconnected')
+          return accounts[0];
+      }
+    }
 }
 
 
