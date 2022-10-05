@@ -112,11 +112,12 @@ const Form = () => {
             />
           </SimpleGrid>
           <CustomButton
-            mt="40px"
-            w="100%"
+            w={{ base: "90%", lg: "60%" }}
             bg="brand.teal"
+            d="flex"
             hover="none"
             color="brand.white"
+            m="40px auto"
             hoverColor="brand.white"
             isLoading={createLoading}
             onClick={create}

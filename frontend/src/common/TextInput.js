@@ -10,7 +10,9 @@ const TextInput = ({
   defaultValue,
   color,
   border,
+  borderColor,
   bg,
+  isReadOnly
 }) => {
   return (
     <Box mt="20px">
@@ -32,9 +34,11 @@ const TextInput = ({
         type={type}
         defaultValue={defaultValue}
         border={border}
+        borderColor={borderColor}
         focusBorderColor="#15F4CB"
         _focus={{ border: "0.1px solid #15F4CB" }}
         color={color}
+        isReadOnly={isReadOnly}
       />
     </Box>
   );
