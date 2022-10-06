@@ -50,7 +50,7 @@ const Form = () => {
       h="100vh"
     >
       <Navbar />
-      <Box p="15px 50px" margin="50px 0">
+      <Box p={{base: "15px 10px", lg:"15px 50px"}} margin="50px 0">
         <Text
           color="white"
           fontSize={{ base: "20px", lg: "50px" }}
