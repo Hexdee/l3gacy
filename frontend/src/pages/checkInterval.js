@@ -64,7 +64,12 @@ const CheckInterval = () => {
     >
       <Navbar />
       <Box p="15px 50px" margin="50px 0">
-        <Box mb="40px" display="flex" justifyContent="space-between" alignItems="center">
+        <Box
+          mb="40px"
+          display={{base: "block", lg: "flex"}}
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Box>
             <Text
               color="white"
@@ -74,11 +79,11 @@ const CheckInterval = () => {
               Your Profile
             </Text>
             <Text color="brand.teal" fontSize="14px">
-              You are viewing this page because you have created a legacy account
-              with us.
+              You are viewing this page because you have created a legacy
+              account with us.
             </Text>
           </Box>
-          <Box d="flex" justifyContent="flex-end" alignSelf="flex-end">
+          <Box d="flex" justifyContent="flex-end" alignSelf="flex-end" mt={{ base: "10px" }}>
             <CustomButton
               w={{ base: "90%", lg: "99%" }}
               d="flex"
@@ -97,13 +102,28 @@ const CheckInterval = () => {
         <Box h="1px" bgColor="brand.grey"></Box>
         <Box mt="20px">
           <a href="/get-started">
-            <Flex alignItems="center" mb="20px" cursor="pointer" w="fit-content">
+            <Flex
+              alignItems="center"
+              mb="20px"
+              cursor="pointer"
+              w="fit-content"
+            >
               <Box mr="10px">{editIcon}</Box>
-              <Text color="brand.white" fontSize="14px" _hover={{ color: "brand.teal" }} >Edit profile</Text>
+              <Text
+                color="brand.white"
+                fontSize="14px"
+                _hover={{ color: "brand.teal" }}
+              >
+                Edit profile
+              </Text>
             </Flex>
           </a>
-        <Box h="1px" bgColor="brand.grey"></Box>
-          <SimpleGrid columns={2} spacing="42" mt="20px">
+          <Box h="1px" bgColor="brand.grey"></Box>
+          <SimpleGrid
+            columns={{ base: 1, lg: 2 }}
+            spacing={{ lg: "42" }}
+            mt={{ base: "0", lg: "20px" }}
+          >
             <TextInput
               color="brand.white"
               bg="none"
@@ -120,7 +140,7 @@ const CheckInterval = () => {
               borderColor="brand.grey"
             />
           </SimpleGrid>
-          <SimpleGrid columns={2} spacing="42">
+          <SimpleGrid columns={{ base: 1, lg: 2 }} spacing="42">
             <TextInput
               color="brand.white"
               bg="none"
