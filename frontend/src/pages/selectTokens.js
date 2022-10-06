@@ -9,8 +9,8 @@ import Navbar from "../navbar/navbar";
 import {
   checkConnection,
   isDisconnected,
-  addTokens
-} from "../utils/helpers.js"
+  addTokens,
+} from "../utils/helpers.js";
 import { legacyAddress } from "../utils/contract";
 
 const SelectTokens = () => {
@@ -20,50 +20,47 @@ const SelectTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
 
-
   useEffect(() => {
     setGetTokensLoading(true);
     getTokens();
-  }, [])
+  }, []);
 
-const getTokens = async() => {
-  if(isDisconnected()) {
-    return;
-  }
-  const user = await checkConnection();
-  console.log(user);
-  console.log("fetching tokens...")
-  try {
-    const url = new URL(
-      `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
-    );
-  
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key":
-          "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
-      },
-    })
-    const res_json = await res.json();
-    // console.log(res_json);
-    setTokens(res_json);
-    setGetTokensLoading(false);
-    // console.log(tokens);
-  } catch(err) {
-    console.log(err);
-    setGetTokensLoading(false);
-  }
-}
+  const getTokens = async () => {
+    if (isDisconnected()) {
+      return;
+    }
+    const user = await checkConnection();
+    console.log(user);
+    console.log("fetching tokens...");
+    try {
+      const url = new URL(
+        `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
+      );
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key":
+            "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
+        },
+      });
+      const res_json = await res.json();
+      // console.log(res_json);
+      setTokens(res_json);
+      setGetTokensLoading(false);
+      // console.log(tokens);
+    } catch (err) {
+      console.log(err);
+      setGetTokensLoading(false);
+    }
+  };
 
   const approve = async (tokenAddress) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
 
-    const erc20Abi = [
-      "function approve(address spender, uint256 amount)",
-    ];
+    const erc20Abi = ["function approve(address spender, uint256 amount)"];
     const token = new ethers.Contract(tokenAddress, erc20Abi, signer);
     const tx = await token.approve(legacyAddress, ethers.constants.MaxUint256);
   };
@@ -72,12 +69,12 @@ const getTokens = async() => {
     let tokenAddresses = selectedTokens.map((tkn) => tkn.token_address);
     const res = await addTokens(tokenAddresses);
     setIsLoading(false);
-    if(res) {
-      navigate('/profile');
+    if (res) {
+      navigate("/profile");
     }
   };
 
-  const selectToken = async(token) => {
+  const selectToken = async (token) => {
     try {
       await approve(token.token_address);
     } catch (error) {
@@ -94,16 +91,27 @@ const getTokens = async() => {
   };
 
   return (
-    <Box padding={{ base: "10px 40px", lg: "30px 80px" }}>
+    <Box
+      padding={{ base: "10px 40px", lg: "30px 80px" }}
+      bg="#02044A"
+      h="100vh"
+    >
       <Navbar />
-      <Box m="40px auto">
-        <Text fontSize={{ base: '30px', lg: "65px"}} fontWeight="600" color="brand.dark">
-          SELECT TOKENS
-        </Text>
-        <Text color="brand.primary" fontSize={{ base: '12px', lg: "16px"}}>
-          Kindly select all your tokens you would like to transfer it's asset
-          to your next of kin.
-        </Text>
+      <Box p={{base: "15px 10px", lg:"15px 50px"}} margin="50px 0">
+        <Box mb="20px">
+          <Text
+            color="white"
+            fontSize={{ base: "20px", lg: "50px" }}
+            fontWeight="black"
+          >
+            Select Tokens
+          </Text>
+          <Text color="brand.teal" fontSize={{ base: "12px", lg: "14px" }}>
+            Kindly select all your tokens you would like to transfer it's asset to
+            your next of kin.
+          </Text>
+        </Box>
+        <Box h="1px" bgColor="brand.grey"></Box>
         <Box
           bg="#F9F9F9"
           w="100%"
@@ -115,12 +123,18 @@ const getTokens = async() => {
             loading
           ) : (
             <>
-                <Text mt="-10px" mb="20px" cursor="pointer" _hover={{ color: 'brand.primary' }} onClick={selectAll}>
-                Select All
-                </Text>
-              <SimpleGrid columns="4" spacing="10">
+              <Text
+                mt="-10px"
+                mb="20px"
+                cursor="pointer"
+                _hover={{ color: "brand.primary" }}
+                onClick={selectAll}
+              >
+                {tokens.length ? 'Select All' : ''}
+              </Text>
                 {tokens.length ? (
-                  tokens.map((token) => (
+              <SimpleGrid columns="4" spacing="10">
+                  {tokens.map((token) => (
                     <Box
                       w="230px"
                       boxShadow="rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px"
@@ -158,21 +172,41 @@ const getTokens = async() => {
                         </Text>
                       </Flex>
                     </Box>
-                  ))
+                  ))}
+              </SimpleGrid>
                 ) : (
                   <Text color="brand.primary">
-                    You currently do not have any token
+                    You do not have any token
                   </Text>
                 )}
-              </SimpleGrid>
             </>
           )}
         </Box>
-        <CustomButton w={{ base: "100%", lg: '170px' }} bg="brand.primary" color="brand.white" hoverColor="brand.yellow" isLoading={isLoading} onClick={add} ml={{ base: '0', lg: "20px"}}>
-          Proceed
-        </CustomButton>
-        <CustomButton w={{ base: "100%", lg: '170px' }} mt={{ base: "20px", md: '0' }}  onClick={() => navigate("/profile")} ml={{ base: '0', lg: "20px"}}>
+        <CustomButton
+          w={{ base: "100%", lg: "170px" }}
+          onClick={() => navigate("/profile")}
+          ml={{ base: "0", lg: "20px" }}
+          color="brand.white"
+          bg="brand.teal"
+          hover="none"
+          hoverColor="brand.white"
+          border="1px solid #15F4CB"
+        >
           Later
+        </CustomButton>
+        <CustomButton
+          isLoading={isLoading}
+          onClick={add}
+          ml={{ base: "0", lg: "20px" }}
+          mt={{ base: "20px", md: "0" }}
+          bg="none"
+          w={{ base: "100%", lg: "170px" }}
+          hover="brand.teal"
+          border="1px solid #15F4CB"
+          hoverColor="brand.white"
+          color="brand.white"
+        >
+          Proceed
         </CustomButton>
       </Box>
     </Box>
