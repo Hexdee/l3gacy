@@ -94,14 +94,14 @@ const getTokens = async() => {
   };
 
   return (
-    <Box padding={{ base: '10px 40px', lg: "30px 80px"}}>
+    <Box padding={{ base: "10px 40px", lg: "30px 80px" }}>
       <Navbar />
       <Box m="40px auto">
         <Text fontSize={{ base: '30px', lg: "65px"}} fontWeight="600" color="brand.dark">
           SELECT TOKENS
         </Text>
         <Text color="brand.primary" fontSize={{ base: '12px', lg: "16px"}}>
-          Kindly select all of your tokens you would like to transfer it's asset
+          Kindly select all your tokens you would like to transfer it's asset
           to your next of kin.
         </Text>
         <Box

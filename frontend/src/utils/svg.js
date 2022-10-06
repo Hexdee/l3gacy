@@ -78,6 +78,55 @@ export const loading = (
   </svg>
 );
 
+export const loadingWhite = (
+  <svg
+  version="1.1"
+  id="L5"
+  xmlns="http://www.w3.org/2000/svg"
+  style={{
+    width: "200px",
+    height: "200px",
+    margin: "0 auto 10px",
+    paddingLeft: "60px",
+  }}
+  x="0px"
+  y="0px"
+  viewBox="0 0 100 100"
+  enable-background="new 0 0 0 0"
+>
+  <circle fill="#FFFFFF" stroke="none" cx="6" cy="50" r="6">
+    <animateTransform
+      attributeName="transform"
+      dur="1s"
+      type="translate"
+      values="0 15 ; 0 -15; 0 15"
+      repeatCount="indefinite"
+      begin="0.1"
+    />
+  </circle>
+  <circle fill="#FFFFFF" stroke="none" cx="30" cy="50" r="6">
+    <animateTransform
+      attributeName="transform"
+      dur="1s"
+      type="translate"
+      values="0 10 ; 0 -10; 0 10"
+      repeatCount="indefinite"
+      begin="0.2"
+    />
+  </circle>
+  <circle fill="#FFFFFF" stroke="none" cx="54" cy="50" r="6">
+    <animateTransform
+      attributeName="transform"
+      dur="1s"
+      type="translate"
+      values="0 5 ; 0 -5; 0 5"
+      repeatCount="indefinite"
+      begin="0.3"
+    />
+  </circle>
+</svg>
+);
+
 export const transfer = (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M4.16669 3.33331L1.66669 5.83331L4.16669 8.33331" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>

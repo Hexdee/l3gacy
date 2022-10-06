@@ -3,7 +3,7 @@ import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import CustomButton from "../common/CustomButton";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { toaster } from "evergreen-ui";
+import { Spinner, toaster } from "evergreen-ui";
 import TextInput from "../common/TextInput";
 import { useNavigate } from "react-router-dom";
 import getUserInterval from "../utils/helpers";
@@ -14,7 +14,7 @@ import {
   addTokens,
 } from "../utils/helpers.js";
 import { legacyAddress, legacyAbi } from "../utils/contract";
-import { editIcon } from "../utils/svg";
+import { editIcon, loadingWhite } from "../utils/svg";
 
 const CheckInterval = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const CheckInterval = () => {
   const [interval, setInterval] = useState();
   const [lastSeen, setLastSeen] = useState();
   const [checkInLoading, setCheckInLoading] = useState(false);
+  // const [loadingProfile, setLoadingProfile] = useState(true);
 
   const getLegacy = async () => {
     console.log(await checkConnection());
@@ -63,10 +64,10 @@ const CheckInterval = () => {
       h="100vh"
     >
       <Navbar />
-      <Box p={{base: "15px 10px", lg:"15px 50px"}} margin="50px 0">
+      <Box p={{ base: "15px 10px", lg: "15px 50px" }} margin="50px 0">
         <Box
           mb="40px"
-          display={{base: "block", lg: "flex"}}
+          display={{ base: "block", lg: "flex" }}
           justifyContent="space-between"
           alignItems="center"
         >
@@ -83,7 +84,12 @@ const CheckInterval = () => {
               account with us.
             </Text>
           </Box>
-          <Box d="flex" justifyContent="flex-end" alignSelf="flex-end" mt={{ base: "10px" }}>
+          <Box
+            d="flex"
+            justifyContent="flex-end"
+            alignSelf="flex-end"
+            mt={{ base: "10px" }}
+          >
             <CustomButton
               w={{ base: "90%", lg: "99%" }}
               d="flex"
@@ -100,72 +106,78 @@ const CheckInterval = () => {
           </Box>
         </Box>
         <Box h="1px" bgColor="brand.grey"></Box>
-        <Box mt="20px">
-          <a href="/get-started">
-            <Flex
-              alignItems="center"
-              mb="20px"
-              cursor="pointer"
-              w="fit-content"
-            >
-              <Box mr="10px">{editIcon}</Box>
-              <Text
-                color="brand.white"
-                fontSize="14px"
-                _hover={{ color: "brand.teal" }}
+        {legatee ? (
+          <>
+            <Box mt="20px">
+                <Flex
+                  alignItems="center"
+                  mb="20px"
+                  cursor="pointer"
+                  w="fit-content"
+                  onClick={() => navigate('/get-started')}
+                >
+                  <Box mr="10px">{editIcon}</Box>
+                  <Text
+                    color="brand.white"
+                    fontSize="14px"
+                    _hover={{ color: "brand.teal" }}
+                  >
+                    Edit profile
+                  </Text>
+                </Flex>
+              {/* </a> */}
+              <Box h="1px" bgColor="brand.grey"></Box>
+              <SimpleGrid
+                columns={{ base: 1, lg: 2 }}
+                spacing={{ lg: "42" }}
+                mt={{ base: "0", lg: "20px" }}
               >
-                Edit profile
-              </Text>
-            </Flex>
-          </a>
-          <Box h="1px" bgColor="brand.grey"></Box>
-          <SimpleGrid
-            columns={{ base: 1, lg: 2 }}
-            spacing={{ lg: "42" }}
-            mt={{ base: "0", lg: "20px" }}
-          >
-            <TextInput
-              color="brand.white"
-              bg="none"
-              label="Next of kin Wallet"
-              value={legatee}
-              borderColor="brand.grey"
-              isReadonly
-            />
-            <TextInput
-              color="brand.white"
-              bg="none"
-              label="CheckIn Interval"
-              value={interval}
-              borderColor="brand.grey"
-            />
-          </SimpleGrid>
-          <SimpleGrid columns={{ base: 1, lg: 2 }} spacing="42">
-            <TextInput
-              color="brand.white"
-              bg="none"
-              label="Last seen"
-              value={lastSeen}
-              borderColor="brand.grey"
-            />
-          </SimpleGrid>
-        </Box>
-        <Box mt="40px">
-          <CustomButton
-            w={{ base: "90%", lg: "60%" }}
-            d="flex"
-            m="10px auto"
-            bg="#15F4CB"
-            hover="none"
-            border="1px solid #15F4CB"
-            hoverColor="brand.teal"
-            color="brand.white"
-            isLoading={checkInLoading}
-            onClick={checkIn}
-          >
-            Check In
-          </CustomButton>
-        </Box>
+                <TextInput
+                  color="brand.white"
+                  bg="none"
+                  label="Next of kin Wallet"
+                  value={legatee}
+                  borderColor="brand.grey"
+                  isReadonly
+                />
+                <TextInput
+                  color="brand.white"
+                  bg="none"
+                  label="CheckIn Interval"
+                  value={interval}
+                  borderColor="brand.grey"
+                />
+              </SimpleGrid>
+              <SimpleGrid columns={{ base: 1, lg: 2 }} spacing="42">
+                <TextInput
+                  color="brand.white"
+                  bg="none"
+                  label="Last seen"
+                  value={lastSeen}
+                  borderColor="brand.grey"
+                />
+              </SimpleGrid>
+            </Box>
+            <Box mt="40px">
+              <CustomButton
+                w={{ base: "90%", lg: "60%" }}
+                d="flex"
+                m="10px auto"
+                bg="#15F4CB"
+                hover="none"
+                border="1px solid #15F4CB"
+                hoverColor="brand.teal"
+                color="brand.white"
+                isLoading={checkInLoading}
+                onClick={checkIn}
+              >
+                Check In
+              </CustomButton>
+            </Box>
+          </>
+        ) : (
+          loadingWhite
+        )}
       </Box>
     </Box>
   );
