@@ -7,17 +7,32 @@ module.exports = {
   paths: {
     artifacts: './src/artifacts',
   },
-  defaultNetwork: "fuji",
+  defaultNetwork: "testnet",
   networks: {
     hardhat: {
     },
-    fuji: {
-      url: process.env.QUICKNODE_URL,
+    testnet: {
+      url: "https://testnet-rpc.coinex.net",
       accounts: [`0x` + process.env.PRIVATE_KEY],
-      chainId: 43113,
+      chainId: 53,
     },
   },
   etherscan: {
-    apiKey: process.env.API_KEY
+    apiKey: {
+      testnet: process.env.API_KEY
+    },
+    customChains: [
+      {
+        // network: "testnet",
+        chainId: 53,
+        urls: {
+          apiURL: "https://testnet.coinex.net/api/v1",
+          browserURL: "https://testnet.coinex.net"
+        }
+      }
+    ]
   }
+  // etherscan: {
+  //   apiKey: process.env.API_KEY
+  // },
 }
