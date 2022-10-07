@@ -31,11 +31,9 @@ const getTokens = async() => {
     return;
   }
   const user = await checkConnection();
-  console.log(user);
-  console.log("fetching tokens...")
   try {
     const url = new URL(
-      `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
+      `http://www.coinex.net/api/v1/addresses/${user}/tokens`
     );
   
     const res = await fetch(url, {
@@ -43,11 +41,11 @@ const getTokens = async() => {
       headers: {
         "Content-Type": "application/json",
         "X-API-Key":
-          "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
+          "633dae64e8e353aaa5d562a4",
       },
     })
     const res_json = await res.json();
-    // console.log(res_json);
+    console.log(res_json);
     setTokens(res_json);
     setGetTokensLoading(false);
     // console.log(tokens);

@@ -53,7 +53,7 @@ export async function connect() {
       // check if the chain to connect to is installed
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0xA869' }], // chainId must be in hexadecimal numbers
+        params: [{ chainId: '0x35' }], // chainId must be in hexadecimal numbers
       });
     } catch (error) {
       // This error code indicates that the chain has not been added to MetaMask
@@ -64,15 +64,15 @@ export async function connect() {
             method: 'wallet_addEthereumChain',
             params: [
               {
-                chainId: '0xA869',
-                chainName: 'Avalanche Fuji testnet',
+                chainId: '0x35',
+                chainName: 'CoinEx Smart Chain Testnet',
                 nativeCurrency: {
-                  name: 'Avalanche Token',
-                  symbol: 'AVAX', // 2-6 characters long
+                  name: 'Coinex token',
+                  symbol: 'cett', // 2-6 characters long
                   decimals: 18
-                },
-                blockExplorerUrls: ['https://testnet.snowtrace.io'],
-                rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+                },  
+                blockExplorerUrls: ['https://testnet.coinex.net'],
+                rpcUrls: ['https://testnet-rpc.coinex.net/'],
               },
             ],
           });
@@ -83,7 +83,7 @@ export async function connect() {
         }
       } else {
         console.log(error);
-        toaster.danger('failed to switch network to AVAX Fuji testnet')
+        toaster.danger('failed to switch network to CoinEx smartchain')
         return;
       }
     }
