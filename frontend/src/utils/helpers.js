@@ -129,7 +129,7 @@ const getUserInterval = async(getUser, setLegatee, setLastSeen, setInterval) => 
           const index = await legacy.legacyIndexes(await checkConnection());
             const res = await legacy.legacies(Number(index))
               console.log(res)
-              const legatee = res[1];
+              const legatee = res[0];
               //Convert lastSeen to minutes (just for the sake of demo)
               let ls = Math.floor( ((Number(new Date()) / 1000) - Number(res[2])) / (3600 * 24) );
               const lastSeen = ls == 0 ? "Today" : `${ls} days ago`;
