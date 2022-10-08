@@ -20,7 +20,17 @@ const SelectTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
 
+  const test = async() => {
+    const res2 = await fetch('https://testnet.coinex.net/api/v1', {
+      headers: {
+        'apikey': '633dae64e8e353aaa5d562a4'
+      }
+    });
+    console.log(await res2.json());
+  }
+
   useEffect(() => {
+    test();
     setGetTokensLoading(true);
     getTokens();
   }, []);
@@ -33,21 +43,36 @@ const SelectTokens = () => {
     console.log(user);
     console.log("fetching tokens...");
     try {
-      const url = new URL(
-        `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
-      );
+      // const url = new URL(
+      //   `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
+      // );
 
-      const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key":
-            "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
-        },
-      });
-      const res_json = await res.json();
-      // console.log(res_json);
-      setTokens(res_json);
+      // const res = await fetch(url, {
+      //   method: "GET",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "X-API-Key":
+      //       "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
+      //   },
+      // });
+
+      // const res_json = await res.json();
+
+      // // console.log(res_json);
+      // setTokens(res_json);
+      const usdc = {
+        symbol: "USDC",
+        token_address: "0x6bb92A5E17e28E9D3f7Eb2B58E9DA4E5278Da0bC"
+      }
+      // const ones  = {
+      //   symbol: "ONES",
+      //   token_address: "0x6db1736656Ed09cAC5957d7B14e703e6268D1337"
+      // }
+      // const dai  = {
+      //   symbol: "DAI",
+      //   token_address: "0xbf0A736F6107D10fCE53d056C95fD73d266283Bb"
+      // }
+      setTokens([usdc])
       setGetTokensLoading(false);
       // console.log(tokens);
     } catch (err) {

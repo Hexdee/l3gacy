@@ -87,12 +87,11 @@ export async function connect() {
         return;
       }
     }
-      if(window.confirm("Are you sure you want to connect your wallet. This would let Legacy see your wallet address and account balance")) {
+      window.alert("Are you sure you want to connect your wallet. This would let Legacy see your wallet address and account balance")
         const accounts = await window.ethereum
           .request({ method: 'eth_requestAccounts' })
           localStorage.removeItem('isDisconnected')
           return accounts[0];
-      }
     }
 }
 
