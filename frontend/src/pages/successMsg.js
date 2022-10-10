@@ -9,7 +9,7 @@ const SuccessMessage = () => {
     <Box
       padding={{ base: "10px 40px", lg: "30px 80px" }}
       bg="#02044A"
-      h="100vh"
+      minH="100vh"
     >
       <Navbar />
 
