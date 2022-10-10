@@ -12,6 +12,7 @@ import {
   addTokens,
 } from "../utils/helpers.js";
 import { legacyAddress } from "../utils/contract";
+import AlreadySelectedTokens from "../templates/alreadySelectedTokens";
 
 const SelectTokens = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const SelectTokens = () => {
   const [selectedTokens, setSelectedTokens] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
+  const [prevTokens, setPrevTokens] = useState(false);
 
   const test = async() => {
     const res2 = await fetch('https://testnet.coinex.net/api/v1', {
@@ -40,7 +42,7 @@ const SelectTokens = () => {
       return;
     }
     const user = await checkConnection();
-    console.log(user);
+    // console.log(user);
     console.log("fetching tokens...");
     try {
       // const url = new URL(
@@ -74,7 +76,6 @@ const SelectTokens = () => {
       // }
       setTokens([usdc])
       setGetTokensLoading(false);
-      // console.log(tokens);
     } catch (err) {
       console.log(err);
       setGetTokensLoading(false);
@@ -99,12 +100,13 @@ const SelectTokens = () => {
     }
   };
 
-  const selectToken = async (token) => {
+  const selectToken = async (token, index) => {
     try {
       await approve(token.token_address);
     } catch (error) {
       console.log(error);
     }
+    console.log(index);
     setSelectedTokens([...selectedTokens, token]);
     toaster.success(`${token.symbol} successfully selected`);
   };
@@ -119,7 +121,7 @@ const SelectTokens = () => {
     <Box
       padding={{ base: "10px 40px", lg: "30px 80px" }}
       bg="#02044A"
-      h="100vh"
+      minH="100vh"
     >
       <Navbar />
       <Box p={{base: "15px 10px", lg:"15px 50px"}} margin="50px 0">
@@ -159,7 +161,7 @@ const SelectTokens = () => {
               </Text>
                 {tokens.length ? (
               <SimpleGrid columns="4" spacing="10">
-                  {tokens.map((token) => (
+                  {tokens.map((token, index) => (
                     <Box
                       w="230px"
                       boxShadow="rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px"
@@ -167,7 +169,7 @@ const SelectTokens = () => {
                     >
                       <Flex
                         color="brand.dark"
-                        bg="brand.white"
+                        bg={tokens === token ? "brand.teal" : "brand.white"}
                         p="15px"
                         h="95px"
                         borderRadius="10px"
@@ -191,7 +193,7 @@ const SelectTokens = () => {
                         <Text
                           as="button"
                           cursor="pointer"
-                          onClick={() => selectToken(token)}
+                          onClick={() => selectToken(token, index)}
                         >
                           Select
                         </Text>
@@ -233,6 +235,14 @@ const SelectTokens = () => {
         >
           Proceed
         </CustomButton>
+
+        <Box m="20px 0">
+          <Box h="1px" bgColor="brand.grey"></Box>
+          <Text color="brand.white" m="20px 0" float="right" cursor="pointer" _hover={{ color: "brand.teal" }} w="fit-content" fontSize="14px" onClick={() => setPrevTokens(!prevTokens)}>View already selected tokens here</Text>
+          {prevTokens &&
+            <AlreadySelectedTokens />
+          }
+        </Box>
       </Box>
     </Box>
   );
