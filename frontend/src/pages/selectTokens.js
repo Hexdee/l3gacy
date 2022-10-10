@@ -21,6 +21,7 @@ const SelectTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
   const [prevTokens, setPrevTokens] = useState(false);
+  const [active, setActive] = useState();
 
   useEffect(() => {
     setGetTokensLoading(true);
@@ -78,12 +79,19 @@ const SelectTokens = () => {
   const selectToken = async (token, index) => {
     try {
       await approve(token.token_address);
+      setActive(() => {
+        if (index === active) {
+          index = null;
+        };
+        return index;
+      })
+      toaster.success(`${token.symbol} successfully selected`);
     } catch (error) {
       console.log(error);
     }
     console.log(index);
     setSelectedTokens([...selectedTokens, token]);
-    toaster.success(`${token.symbol} successfully selected`);
+
   };
 
   const selectAll = () => {
@@ -144,7 +152,7 @@ const SelectTokens = () => {
                     >
                       <Flex
                         color="brand.dark"
-                        bg={tokens === token ? "brand.teal" : "brand.white"}
+                        bg={active === index ? "brand.teal" : "brand.white"}
                         p="15px"
                         h="95px"
                         borderRadius="10px"
