@@ -1,6 +1,6 @@
 import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 
-const AlreadySelectedTokens = () => {
+const PrevSelectedTokens = () => {
   const tokensData = [
     {
       symbol: "AVL",
@@ -79,4 +79,4 @@ const AlreadySelectedTokens = () => {
   );
 };
 
-export default AlreadySelectedTokens;
+export default PrevSelectedTokens;

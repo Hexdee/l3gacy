@@ -1,4 +1,4 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Text, useDisclosure } from "@chakra-ui/react";
 import CustomButton from "../common/CustomButton";
 import { loading } from "../utils/svg";
 import { useEffect, useState } from "react";
@@ -12,7 +12,8 @@ import {
   addTokens,
 } from "../utils/helpers.js";
 import { legacyAddress } from "../utils/contract";
-import AlreadySelectedTokens from "../templates/alreadySelectedTokens";
+import AlreadySelectedTokens from "../templates/prevSelectedTokens";
+import TokenModal from "../modal/modal";
 
 const SelectTokens = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const SelectTokens = () => {
   const [getTokensLoading, setGetTokensLoading] = useState(false);
   const [prevTokens, setPrevTokens] = useState(false);
   const [active, setActive] = useState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     setGetTokensLoading(true);
@@ -67,14 +69,15 @@ const SelectTokens = () => {
     const tx = await token.approve(legacyAddress, ethers.constants.MaxUint256);
   };
 
-  const add = async () => {
+  const handleProceed = async () => {
     let tokenAddresses = selectedTokens.map((tkn) => tkn.token_address);
     const res = await addTokens(tokenAddresses);
     setIsLoading(false);
     if (res) {
       navigate("/profile");
+      onClose();
     }
-  };
+  }
 
   const selectToken = async (token, index) => {
     try {
@@ -206,7 +209,7 @@ const SelectTokens = () => {
         </CustomButton>
         <CustomButton
           isLoading={isLoading}
-          onClick={add}
+          onClick={() => onOpen()}
           ml={{ base: "0", lg: "20px" }}
           mt={{ base: "20px", md: "0" }}
           bg="none"
@@ -227,6 +230,13 @@ const SelectTokens = () => {
           }
         </Box>
       </Box>
+
+      <TokenModal
+        isOpen={isOpen}
+        onClose={onClose}
+        header="Confirm Selected Tokens"
+        handleProceed={handleProceed}
+      />
     </Box>
   );
 };
