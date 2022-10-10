@@ -4,27 +4,7 @@ const SelectedTokens = () => {
     const tokensData = [
         {
           symbol: "AVL",
-          token: "677AHSUJEMS88SDMDM637DJD",
-        },
-        {
-          symbol: "JBL",
-          token: "677AHSUJEMS88SDMDM637DJD",
-        },
-        {
-          symbol: "AVL",
-          token: "677AHSUJEMS88SDMDM637DJD",
-        },
-        {
-          symbol: "JBL",
-          token: "677AHSUJEMS88SDMDM637DJD",
-        },
-        {
-          symbol: "AVL",
-          token: "677AHSUJEMS88SDMDM637DJD",
-        },
-        {
-          symbol: "JBL",
-          token: "677AHSUJEMS88SDMDM637DJD",
+          token: "my token",
         },
       ];
     return (
