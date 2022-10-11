@@ -27,11 +27,27 @@ export async function createLegacy(legatee, checkInterval) {
     const signer = provider.getSigner();
     const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
     const tx = await legacy.create(legatee, checkInterval);
-    // await tx.wait();
+    await tx.wait;
     return true;
   } catch (err) {
     console.log(err)
     toaster.danger('Could not create legacy');
+    return false
+  }
+}
+
+export async function editLegacy(legatee, checkInterval) {
+  try{
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
+    console.log(legatee, checkInterval);
+    const tx = await legacy.updateLegacy(legatee, checkInterval);
+    await tx.wait();
+    return true;
+  } catch (err) {
+    console.log(err)
+    toaster.danger('Could not edit legacy');
     return false
   }
 }
@@ -45,6 +61,14 @@ export const hasLegacy = async(address) => {
   } else {
     return true;
   }
+}
+
+export const getLegacyTokens = async(address) => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const legacy = new ethers.Contract(legacyAddress, legacyAbi, provider);
+  const legacyIndex = Number(await legacy.legacyIndexes(address));
+  const tokens = await legacy.getLegacyTokens(legacyIndex);
+  return tokens;
 }
 
 export async function connect() {
@@ -117,18 +141,17 @@ export async function checkConnection() {
   }
 }
 
-const getUserInterval = async(getUser, setLegatee, setLastSeen, setInterval) => {
+const getUserInterval = async() => {
         try {
           const provider = new ethers.providers.Web3Provider(window.ethereum);
           const signer = provider.getSigner();
           const legacy = new ethers.Contract(legacyAddress, legacyAbi, signer);
-          console.log(legacy);
           //TODO
           //Display loader
           const index = await legacy.legacyIndexes(await checkConnection());
             const res = await legacy.legacies(Number(index))
-              console.log(res)
-              const legatee = res[0];
+            console.log(res)
+              const legatee = res[1];
               //Convert lastSeen to minutes (just for the sake of demo)
               let ls = Math.floor( ((Number(new Date()) / 1000) - Number(res[2])) / (3600 * 24) );
               const lastSeen = ls == 0 ? "Today" : `${ls} days ago`;

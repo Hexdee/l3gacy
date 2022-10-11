@@ -8,6 +8,7 @@ import CheckInterval from "../pages/checkInterval";
 import Form from "../pages/form";
 import SelectTokens from "../pages/selectTokens";
 import SuccessMessage from "../pages/successMsg";
+import Edit from "../pages/edit";
 
 const AppRoute = () => {
 
@@ -22,6 +23,7 @@ const AppRoute = () => {
         <Route path="/select-token" element={<SelectTokens />} />
         <Route path="/profile" element={<CheckInterval />} />
         <Route path="/success" element={<SuccessMessage />} />
+        <Route path="/edit" element={<Edit />} />
       </Routes>
      </ChakraProvider>
     </BrowserRouter>,

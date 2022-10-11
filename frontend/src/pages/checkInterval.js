@@ -18,6 +18,7 @@ import { editIcon, loadingWhite } from "../utils/svg";
 
 const CheckInterval = () => {
   const navigate = useNavigate();
+  const [legateeAddress, setLegateeAddress] = useState();
   const [legatee, setLegatee] = useState();
   const [interval, setInterval] = useState();
   const [lastSeen, setLastSeen] = useState();
@@ -25,12 +26,12 @@ const CheckInterval = () => {
   // const [loadingProfile, setLoadingProfile] = useState(true);
 
   const getLegacy = async () => {
-    console.log(await checkConnection());
     const legacy = await getUserInterval(await checkConnection());
     console.log(legacy);
     setInterval(legacy.interval);
     setLastSeen(legacy.lastSeen);
-    setLegatee(legacy.legatee);
+    setLegatee(localStorage.getItem("legatee"));
+    setLegateeAddress(legacy.legatee);
   };
 
   useEffect(() => {
@@ -106,7 +107,7 @@ const CheckInterval = () => {
           </Box>
         </Box>
         <Box h="1px" bgColor="brand.grey"></Box>
-        {legatee ? (
+        {legateeAddress ? (
           <>
             <Box mt="20px">
                 <Flex
@@ -114,7 +115,7 @@ const CheckInterval = () => {
                   mb="20px"
                   cursor="pointer"
                   w="fit-content"
-                  onClick={() => navigate('/get-started')}
+                  onClick={() => navigate('/edit')}
                 >
                   <Box mr="10px">{editIcon}</Box>
                   <Text
@@ -135,8 +136,16 @@ const CheckInterval = () => {
                 <TextInput
                   color="brand.white"
                   bg="none"
-                  label="Next of kin Wallet"
+                  label="Next of kin"
                   value={legatee}
+                  borderColor="brand.grey"
+                  isReadonly
+                />
+                <TextInput
+                  color="brand.white"
+                  bg="none"
+                  label="Next of kin Wallet"
+                  value={legateeAddress}
                   borderColor="brand.grey"
                   isReadonly
                 />
@@ -147,8 +156,6 @@ const CheckInterval = () => {
                   value={interval}
                   borderColor="brand.grey"
                 />
-              </SimpleGrid>
-              <SimpleGrid columns={{ base: 1, lg: 2 }} spacing="42">
                 <TextInput
                   color="brand.white"
                   bg="none"

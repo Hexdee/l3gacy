@@ -1,46 +1,20 @@
 import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 
-const AlreadySelectedTokens = () => {
-  const tokensData = [
-    {
-      symbol: "AVL",
-      token: "677AHSUJEMS88SDMDM637DJD",
-    },
-    {
-      symbol: "JBL",
-      token: "677AHSUJEMS88SDMDM637DJD",
-    },
-    {
-      symbol: "AVL",
-      token: "677AHSUJEMS88SDMDM637DJD",
-    },
-    {
-      symbol: "JBL",
-      token: "677AHSUJEMS88SDMDM637DJD",
-    },
-    {
-      symbol: "AVL",
-      token: "677AHSUJEMS88SDMDM637DJD",
-    },
-    {
-      symbol: "JBL",
-      token: "677AHSUJEMS88SDMDM637DJD",
-    },
-  ];
+const AlreadySelectedTokens = ({tokens}) => {
+
   return (
     <Box bg="#F9F9F9" w="100%" m="53px auto" p="20px 30px" borderRadius="10px">
       <Text
         mt="-10px"
         mb="20px"
-        cursor="pointer"
-        _hover={{ color: "brand.primary" }}
       >
-        Current tokens selected
+        Tokens that will be sent to your next of kin
       </Text>
-      {tokensData.length ? (
+      {tokens.length ? (
         <SimpleGrid columns="4" spacing="10">
-          {tokensData.map((token, index) => (
+          {tokens.map((token, index) => (
             <Box
+              key={index}
               w="230px"
               boxShadow="rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px"
               borderRadius="10px"
@@ -73,7 +47,7 @@ const AlreadySelectedTokens = () => {
           ))}
         </SimpleGrid>
       ) : (
-        <Text color="brand.primary">You do not have any token</Text>
+        <Text color="brand.primary">You have not added any token</Text>
       )}
     </Box>
   );

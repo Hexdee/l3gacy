@@ -22,9 +22,7 @@ const Form = () => {
     setCreateLoading(true);
     try {
       const res = await createLegacy(legatee, checkInterval * 3600 * 24);
-      const userDetails = { userName, userNextOfKin, checkInterval, legatee };
-      console.log(userDetails);
-      localStorage.setItem("userDetails", userDetails);
+      localStorage.setItem("legatee", userNextOfKin);
       setCreateLoading(false);
       if (res) {
         navigate("/select-token");

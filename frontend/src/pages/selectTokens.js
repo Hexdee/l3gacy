@@ -10,6 +10,7 @@ import {
   checkConnection,
   isDisconnected,
   addTokens,
+  getLegacyTokens,
 } from "../utils/helpers.js";
 import { legacyAddress } from "../utils/contract";
 import AlreadySelectedTokens from "../templates/alreadySelectedTokens";
@@ -17,22 +18,13 @@ import AlreadySelectedTokens from "../templates/alreadySelectedTokens";
 const SelectTokens = () => {
   const navigate = useNavigate();
   const [tokens, setTokens] = useState([]);
+  const [alreadyAddedTokens, setAlreadyAddedTokens] = useState([]);
   const [selectedTokens, setSelectedTokens] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
   const [prevTokens, setPrevTokens] = useState(false);
 
-  const test = async() => {
-    const res2 = await fetch('https://testnet.coinex.net/api/v1', {
-      headers: {
-        'apikey': '633dae64e8e353aaa5d562a4'
-      }
-    });
-    console.log(await res2.json());
-  }
-
   useEffect(() => {
-    test();
     setGetTokensLoading(true);
     getTokens();
   }, []);
@@ -43,7 +35,6 @@ const SelectTokens = () => {
     }
     const user = await checkConnection();
     // console.log(user);
-    console.log("fetching tokens...");
     try {
       // const url = new URL(
       //   `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
@@ -62,19 +53,39 @@ const SelectTokens = () => {
 
       // // console.log(res_json);
       // setTokens(res_json);
-      const usdc = {
-        symbol: "USDC",
-        token_address: "0x6bb92A5E17e28E9D3f7Eb2B58E9DA4E5278Da0bC"
-      }
-      // const ones  = {
-      //   symbol: "ONES",
-      //   token_address: "0x6db1736656Ed09cAC5957d7B14e703e6268D1337"
-      // }
-      // const dai  = {
-      //   symbol: "DAI",
-      //   token_address: "0xbf0A736F6107D10fCE53d056C95fD73d266283Bb"
-      // }
-      setTokens([usdc])
+      const allTokens = [
+        {
+          symbol: "USDC",
+          token_address: "0x6bb92A5E17e28E9D3f7Eb2B58E9DA4E5278Da0bC"
+        },
+        {
+          symbol: "ONES",
+          token_address: "0x6db1736656Ed09cAC5957d7B14e703e6268D1337"
+        },
+        {
+          symbol: "DAI",
+          token_address: "0xbf0A736F6107D10fCE53d056C95fD73d266283Bb"
+        },
+        {
+          symbol: "USDT",
+          token_address: "0xFC4F6E92143621D1ff144C1ff5b7f14ec53535A1"
+        }
+      ]
+
+      const legacyTokens = await getLegacyTokens(user);
+      let alreadyAdded = [];
+      let toBeAdded = [];
+      console.log(legacyTokens);
+      console.log(allTokens);
+      allTokens.map((t) => {
+        if (legacyTokens.includes(t.token_address)) {
+          alreadyAdded.push(t);
+        } else {
+          toBeAdded.push(t);
+        }
+      })
+      setTokens(toBeAdded);
+      setAlreadyAddedTokens(alreadyAdded);
       setGetTokensLoading(false);
     } catch (err) {
       console.log(err);
@@ -82,13 +93,15 @@ const SelectTokens = () => {
     }
   };
 
-  const approve = async (tokenAddress) => {
+  const approve = async (erc20token) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
 
     const erc20Abi = ["function approve(address spender, uint256 amount)"];
-    const token = new ethers.Contract(tokenAddress, erc20Abi, signer);
-    const tx = await token.approve(legacyAddress, ethers.constants.MaxUint256);
+    const tokenContract = new ethers.Contract(erc20token.token_address, erc20Abi, signer);
+    const tx = await tokenContract.approve(legacyAddress, ethers.constants.MaxUint256);
+    await tx.wait();
+    toaster.success(`${erc20token.symbol} successfully selected`);
   };
 
   const add = async () => {
@@ -100,21 +113,19 @@ const SelectTokens = () => {
     }
   };
 
-  const selectToken = async (token, index) => {
+  const selectToken = async (erc20token, index) => {
     try {
-      await approve(token.token_address);
+      await approve(erc20token);
     } catch (error) {
       console.log(error);
     }
     console.log(index);
-    setSelectedTokens([...selectedTokens, token]);
-    toaster.success(`${token.symbol} successfully selected`);
+    setSelectedTokens([...selectedTokens, erc20token]);
   };
 
   const selectAll = () => {
     setSelectedTokens(tokens);
-    tokens.map((token) => approve(token.token_address));
-    toaster.success(`All tokens successfully selected`);
+    tokens.map((erc20token) => approve(erc20token));
   };
 
   return (
@@ -133,12 +144,23 @@ const SelectTokens = () => {
           >
             Select Tokens
           </Text>
-          <Text color="brand.teal" fontSize={{ base: "12px", lg: "14px" }}>
+          {/* <Text color="brand.teal" fontSize={{ base: "12px", lg: "14px" }}>
             Kindly select all your tokens you would like to transfer it's asset to
             your next of kin.
-          </Text>
+          </Text> */}
+          <Text color="brand.white" m="20px 0" float="left" cursor="pointer" _hover={{ color: "brand.teal" }} w="fit-content" fontSize="14px" onClick={() => setPrevTokens(!prevTokens)}>View already added tokens</Text>
+          {prevTokens &&
+            <Text color="brand.white" m="20px 0" float="right" cursor="pointer" _hover={{ color: "brand.teal" }} w="fit-content" fontSize="14px" onClick={() => setPrevTokens(!prevTokens)}>Close</Text>
+          }
+        </Box>
+        <Box m="20px 0">
+          <Box h="1px" bgColor="brand.grey"></Box>
+          {prevTokens &&
+            <AlreadySelectedTokens tokens={alreadyAddedTokens} />
+          }
         </Box>
         <Box h="1px" bgColor="brand.grey"></Box>
+        <Text color="brand.white" m="20px 0" float="right" w="fit-content" fontSize="14px">Add new tokens</Text>
         <Box
           bg="#F9F9F9"
           w="100%"
@@ -163,6 +185,7 @@ const SelectTokens = () => {
               <SimpleGrid columns="4" spacing="10">
                   {tokens.map((token, index) => (
                     <Box
+                      key={index}
                       w="230px"
                       boxShadow="rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px"
                       borderRadius="10px"
@@ -203,7 +226,7 @@ const SelectTokens = () => {
               </SimpleGrid>
                 ) : (
                   <Text color="brand.primary">
-                    You do not have any token
+                    You have added all tokens
                   </Text>
                 )}
             </>
@@ -235,14 +258,6 @@ const SelectTokens = () => {
         >
           Proceed
         </CustomButton>
-
-        <Box m="20px 0">
-          <Box h="1px" bgColor="brand.grey"></Box>
-          <Text color="brand.white" m="20px 0" float="right" cursor="pointer" _hover={{ color: "brand.teal" }} w="fit-content" fontSize="14px" onClick={() => setPrevTokens(!prevTokens)}>View already selected tokens here</Text>
-          {prevTokens &&
-            <AlreadySelectedTokens />
-          }
-        </Box>
       </Box>
     </Box>
   );

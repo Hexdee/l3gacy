@@ -36,6 +36,7 @@ const Home = () => {
         if (isDisconnected()) {
             await connectWallet()
         }
+        // console.log(await hasLegacy(user)); return;
         if (await hasLegacy(user)) {
             navigate('/profile');
         } else {
