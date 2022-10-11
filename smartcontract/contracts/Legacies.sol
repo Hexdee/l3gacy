@@ -41,6 +41,13 @@ contract Legacies is KeeperCompatible {
         delete legacies[_index];
         legacyIndexes[msg.sender] = 0;
     }
+    
+    function updateLegacy(address _legatee, uint256 _checkInterval) public {
+        uint256 _index = legacyIndexes[msg.sender];
+        require(legacies[_index].owner == msg.sender, "not owner!");
+        legacies[_index].checkInterval = _checkInterval;
+        legacies[_index].legatee = _legatee;
+    }
 
     function updateCheckInterval(uint256 _checkInterval) public {
         uint256 _index = legacyIndexes[msg.sender];
