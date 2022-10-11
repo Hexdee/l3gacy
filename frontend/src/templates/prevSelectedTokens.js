@@ -1,7 +1,6 @@
 import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 
 const AlreadySelectedTokens = ({tokens}) => {
-
   return (
     <Box bg="#F9F9F9" w="100%" m="53px auto" p="20px 30px" borderRadius="10px">
       <Text

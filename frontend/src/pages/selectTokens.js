@@ -1,4 +1,4 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Text, useDisclosure } from "@chakra-ui/react";
 import CustomButton from "../common/CustomButton";
 import { loading } from "../utils/svg";
 import { useEffect, useState } from "react";
@@ -13,7 +13,8 @@ import {
   getLegacyTokens,
 } from "../utils/helpers.js";
 import { legacyAddress } from "../utils/contract";
-import AlreadySelectedTokens from "../templates/alreadySelectedTokens";
+import AlreadySelectedTokens from "../templates/prevSelectedTokens";
+import TokenModal from "../modal/modal";
 
 const SelectTokens = () => {
   const navigate = useNavigate();
@@ -23,6 +24,8 @@ const SelectTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [getTokensLoading, setGetTokensLoading] = useState(false);
   const [prevTokens, setPrevTokens] = useState(false);
+  const [active, setActive] = useState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     setGetTokensLoading(true);
@@ -34,25 +37,7 @@ const SelectTokens = () => {
       return;
     }
     const user = await checkConnection();
-    // console.log(user);
     try {
-      // const url = new URL(
-      //   `https://deep-index.moralis.io/api/v2/${user}/erc20?chain=avalanche%20testnet`
-      // );
-
-      // const res = await fetch(url, {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "X-API-Key":
-      //       "4QdwNluHelpTw9qmoAXTsaodpYXP1E1cpdrRmqbTGf9sPhO9hBFPrRydJxkl5TPP",
-      //   },
-      // });
-
-      // const res_json = await res.json();
-
-      // // console.log(res_json);
-      // setTokens(res_json);
       const allTokens = [
         {
           symbol: "USDC",
@@ -104,18 +89,25 @@ const SelectTokens = () => {
     toaster.success(`${erc20token.symbol} successfully selected`);
   };
 
-  const add = async () => {
+  const handleProceed = async () => {
     let tokenAddresses = selectedTokens.map((tkn) => tkn.token_address);
     const res = await addTokens(tokenAddresses);
     setIsLoading(false);
     if (res) {
       navigate("/profile");
+      onClose();
     }
-  };
+  }
 
   const selectToken = async (erc20token, index) => {
     try {
       await approve(erc20token);
+      setActive(() => {
+        if (index === active) {
+          index = null;
+        };
+        return index;
+      })
     } catch (error) {
       console.log(error);
     }
@@ -192,7 +184,7 @@ const SelectTokens = () => {
                     >
                       <Flex
                         color="brand.dark"
-                        bg={tokens === token ? "brand.teal" : "brand.white"}
+                        bg={active === index ? "brand.teal" : "brand.white"}
                         p="15px"
                         h="95px"
                         borderRadius="10px"
@@ -246,7 +238,7 @@ const SelectTokens = () => {
         </CustomButton>
         <CustomButton
           isLoading={isLoading}
-          onClick={add}
+          onClick={() => onOpen()}
           ml={{ base: "0", lg: "20px" }}
           mt={{ base: "20px", md: "0" }}
           bg="none"
@@ -259,6 +251,13 @@ const SelectTokens = () => {
           Proceed
         </CustomButton>
       </Box>
+
+      <TokenModal
+        isOpen={isOpen}
+        onClose={onClose}
+        header="Confirm Selected Tokens"
+        handleProceed={handleProceed}
+      />
     </Box>
   );
 };
